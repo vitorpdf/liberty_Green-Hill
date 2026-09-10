@@ -82,15 +82,6 @@ button:focus-visible, canvas:focus-visible {
   font: bold 21px monospace;
 }
 
-/* Desenha o ícone visual de um anel. */
-.ring-icon {
-  display: inline-block;
-  width: 14px;
-  height: 18px;
-  border: 3px solid #ffd34a;
-  border-radius: 50%;
-}
-
 /* Estilos dos botões pequenos da interface. */
 .icon-button {
   flex-shrink: 0;
@@ -144,7 +135,7 @@ canvas {
   background: #08252226;
 }
 
-/* Painel translúcido usado no menu, pausa e telas de resultado. */
+/* Painel usado no menu, pausa e telas de resultado. */
 .start-card {
   width: min(460px, 100%);
   max-height: 100%;
@@ -318,3 +309,56 @@ canvas {
   .start-hint { margin-top: 8px; font-size: 10px; }
   .stage-footer { min-height: 24px; padding-top: 4px; padding-bottom: 4px; }
 }
+
+/* Controles com múltiplos toques e espaço para recortes da tela. */
+.touch-controls { display: none; }
+
+@media (pointer: coarse), (max-width: 700px) {
+  .toolbar {
+    padding: calc(8px + env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left));
+    gap: 8px;
+  }
+  .icon-button { width: 44px; height: 44px; }
+  .restart-button { min-height: 44px; }
+  .stats { gap: 10px; }
+  .stats dd { font-size: 17px; }
+
+  .overlay { padding: calc(72px + env(safe-area-inset-top)) 12px calc(40px + env(safe-area-inset-bottom)); background: #08252266; }
+  .start-card { padding: 18px; }
+  .menu-screen #screen-title { font-size: 48px; margin: 6px 0 12px; }
+  .start-card p { font-size: 12px; margin-bottom: 12px; }
+  .start-hint { font-size: 10px; margin-top: 10px; }
+  .touch-controls {
+    position: absolute; z-index: 2;
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: calc(34px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: space-between;
+    pointer-events: none;
+  }
+  .direction-pad { display: grid; grid-template-columns: repeat(3, 48px); gap: 5px; }
+  .direction-pad [data-key="ArrowUp"] { grid-column: 2; }
+  .direction-pad [data-key="ArrowLeft"] { grid-column: 1; }
+  .touch-controls button {
+    min-width: 48px; height: 48px; border: 1px solid #9bbca6;
+    border-radius: 12px; background: #183d35ed; color: #fff;
+    font-size: 22px; touch-action: none; user-select: none;
+    -webkit-user-select: none; pointer-events: auto;
+  }
+  .touch-controls .jump-button { width: 76px; height: 76px; background: #d5ee53; color: #15352b; font-size: 16px; font-weight: bold; }
+  .touch-controls button.pressed { background: #658477; transform: scale(.95); }
+  .stage-footer { bottom: calc(3px + env(safe-area-inset-bottom)); justify-content: flex-end; }
+  .stage-footer .controls-hint { display: none; }
+  .toast { bottom: calc(148px + env(safe-area-inset-bottom)); }
+}
+@media (pointer: coarse) and (orientation: landscape) {
+
+  .touch-controls { bottom: calc(38px + env(safe-area-inset-bottom)); }
+  .overlay { z-index: 3; }
+}
+@media (max-width: 350px) {
+  .zone div > span { display: none; }
+  .toolbar { gap: 5px; }
+  .restart-button { padding-inline: 6px; }
+}
+

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102b2a">
   <title>liberty — Green Hill</title>
   <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
       <div class="toolbar">
         <div class="zone"><div><strong>liberty</strong><span>GREEN HILL</span></div></div>
         <dl class="stats">
-          <div><dt>ANÉIS</dt><dd><span class="ring-icon" aria-hidden="true"></span><span id="rings">00</span></dd></div>
+          <div><dt>ANÉIS</dt><dd><span id="rings">00</span></dd></div>
           <div><dt>VIDAS</dt><dd id="lives">03</dd></div>
         </dl>
         <button id="restart" class="restart-button" type="button">Reiniciar</button><button id="pause" class="icon-button" type="button" disabled aria-label="Pausar partida" title="Pausar · Enter">Ⅱ</button>
@@ -34,6 +34,15 @@
         </div>
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
       </div>
+      <div class="touch-controls" aria-label="Controles por toque" hidden>
+        <div class="direction-pad">
+          <button type="button" data-key="ArrowUp" aria-label="Olhar para cima">↑</button>
+          <button type="button" data-key="ArrowLeft" aria-label="Mover para esquerda">←</button>
+          <button type="button" data-key="ArrowDown" aria-label="Agachar ou rolar">↓</button>
+          <button type="button" data-key="ArrowRight" aria-label="Mover para direita">→</button>
+        </div>
+        <button type="button" class="jump-button" data-key="Space" aria-label="Saltar">Saltar</button>
+      </div>
       <div class="stage-footer"><span class="controls-hint">← → Mover · ↑ Olhar · ↓ Agachar/rolar · Espaço Saltar · Enter Pausa · Esc Início</span><span id="progress-text">0% DO PERCURSO</span></div>
       <div class="progress-track" role="progressbar" aria-label="Progresso da fase" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div id="progress-fill"></div></div>
     </section>
@@ -41,6 +50,7 @@
   </main>
 </body>
 </html>
+
 
 
 

@@ -18,6 +18,40 @@
   const PHYSICS = { gravity: 1550, acceleration: 1500, friction: 1800, speed: 390, jump: 610 };
   const STATUS = { menu: "menu", playing: "playing", paused: "paused", won: "won", lost: "lost" };
   const keys = new Set();
+  const touchKeys = new Map();
+  const touchControls = document.querySelector(".touch-controls");
+  const touchLayout = window.matchMedia("(pointer: coarse), (max-width: 700px)");
+  const isHeld = code => keys.has(code) || [...touchKeys.values()].includes(code);
+  function clearTouch() {
+    touchKeys.clear();
+    touchControls.querySelectorAll("button").forEach(button => button.classList.remove("pressed"));
+  }
+  function updateTouchHints() {
+    ui["screen-hint"].innerHTML = touchLayout.matches
+      ? "Use as setas na tela para mover, olhar e rolar.<br>Segure Saltar para um salto mais alto.<br>Cada vilão derrotado: +10 anéis"
+      : "← → Mover · ↑ Olhar · ↓ Agachar/rolar<br>Espaço Saltar · Enter Pausa · Esc Início<br>Cada vilão derrotado: +10 anéis";
+    clearTouch();
+  }
+  touchLayout.addEventListener("change", updateTouchHints);
+  updateTouchHints();
+  touchControls.querySelectorAll("button").forEach(button => {
+    button.addEventListener("contextmenu", event => event.preventDefault());
+    button.addEventListener("pointerdown", event => {
+      if (state !== STATUS.playing || event.button !== 0) return;
+      event.preventDefault();
+      button.setPointerCapture(event.pointerId);
+      touchKeys.set(event.pointerId, button.dataset.key);
+      button.classList.add("pressed");
+      if (button.dataset.key === "Space") jumpQueued = true;
+    });
+    const release = event => {
+      touchKeys.delete(event.pointerId);
+      if (![...touchKeys.values()].includes(button.dataset.key)) button.classList.remove("pressed");
+    };
+    button.addEventListener("pointerup", release);
+    button.addEventListener("pointercancel", release);
+    button.addEventListener("lostpointercapture", release);
+  });
   // Quadros do Sonic no atlas fornecido: x, y, largura, altura.
   // O PNG original é mantido inteiro, incluindo seus créditos.
   const sonicFrames = {
@@ -161,7 +195,7 @@
   // Posiciona o jogador no início e reinicia câmera e comandos pendentes.
   function spawnPlayer(invulnerable = 0) {
     player = createPlayer(invulnerable);
-    keys.clear();
+    keys.clear(); clearTouch();
     jumpQueued = false;
     camera = 0;
     cameraY = 0;
@@ -175,7 +209,7 @@
     ui.toast.classList.remove("visible");
     spawnPlayer();
     changeState(STATUS.playing);
-    notify("Setas para mover e Espaço para saltar.", 5);
+    notify(touchLayout.matches ? "Use as setas e o botão Saltar na tela." : "Setas para mover e Espaço para saltar.", 5);
     updateHUD();
   }
 
@@ -183,12 +217,13 @@
   function changeState(next) {
     state = next;
     ui.overlay.classList.toggle("menu-screen", next === STATUS.menu);
-    keys.clear();
+    keys.clear(); clearTouch();
     jumpQueued = false;
     player.jumpBuffer = 0;
     accumulator = 0;
     const playing = next === STATUS.playing;
     ui.overlay.hidden = playing;
+    touchControls.hidden = !playing;
     ui.pause.disabled = ![STATUS.playing, STATUS.paused].includes(next);
     ui.pause.textContent = next === STATUS.paused ? "▷" : "Ⅱ";
     ui.pause.setAttribute("aria-label", next === STATUS.paused ? "Retomar partida" : "Pausar partida");
@@ -294,9 +329,9 @@
     p.coyote = p.grounded ? .09 : Math.max(0, p.coyote - dt);
     p.jumpBuffer = Math.max(0, p.jumpBuffer - dt);
     if (jumpQueued) { p.jumpBuffer = .12; jumpQueued = false; }
-    const movement = Number(keys.has("ArrowRight")) - Number(keys.has("ArrowLeft"));
-    p.rolling = keys.has("ArrowDown") && p.grounded && Math.abs(p.vx) > 95;
-    p.crouching = keys.has("ArrowDown") && p.grounded && !p.rolling;
+    const movement = Number(isHeld("ArrowRight")) - Number(isHeld("ArrowLeft"));
+    p.rolling = isHeld("ArrowDown") && p.grounded && Math.abs(p.vx) > 95;
+    p.crouching = isHeld("ArrowDown") && p.grounded && !p.rolling;
     if (p.hurt === 0) {
       if (movement && !p.crouching && !p.rolling) {
         p.vx = approach(p.vx, movement * PHYSICS.speed, PHYSICS.acceleration * dt);
@@ -310,7 +345,7 @@
       p.grounded = false; p.coyote = 0; p.jumpBuffer = 0;
     }
     // O salto continua enquanto o espaço é mantido; soltar encurta a subida.
-    if (!keys.has("Space") && p.vy < -230) p.vy += 1800 * dt;
+    if (!isHeld("Space") && p.vy < -230) p.vy += 1800 * dt;
     const previousBottom = p.y + p.h;
     p.x = clamp(p.x + p.vx * dt, 0, WORLD_WIDTH - p.w);
     p.vy = Math.min(900, p.vy + PHYSICS.gravity * dt);
@@ -363,7 +398,7 @@
     }
     particles = particles.filter(particle => particle.life > 0);
     camera = approach(camera, clamp(p.x - WIDTH * .32, 0, Math.max(0, WORLD_WIDTH - WIDTH)), Math.max(1000, Math.abs(p.vx) + 200) * dt);
-    const lookUp = p.grounded && Math.abs(p.vx) < 10 && keys.has("ArrowUp");
+    const lookUp = p.grounded && Math.abs(p.vx) < 10 && isHeld("ArrowUp");
     cameraY = approach(cameraY, lookUp ? -75 : 0, 160 * dt);
     if (toastTime > 0) {
       toastTime -= dt;
@@ -636,7 +671,7 @@
   });
   // Pausa a partida quando a janela perde o foco.
   window.addEventListener("blur", () => {
-    keys.clear();
+    keys.clear(); clearTouch();
     if (state === STATUS.playing) changeState(STATUS.paused);
   });
   // Pausa a partida quando a aba deixa de estar visível.
@@ -672,6 +707,8 @@
   resizeViewport();
   window.requestAnimationFrame(frame);
 })();
+
+
 
 
 
