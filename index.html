@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b2a">
+  <title>liberty — Green Hill</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <h1 class="sr-only">liberty — Green Hill</h1>
+    <section class="arcade" aria-label="Jogo liberty">
+      <div class="toolbar">
+        <div class="zone"><div><strong>liberty</strong><span>GREEN HILL</span></div></div>
+        <dl class="stats">
+          <div><dt>ANÉIS</dt><dd><span class="ring-icon" aria-hidden="true"></span><span id="rings">00</span></dd></div>
+          <div><dt>VIDAS</dt><dd id="lives">03</dd></div>
+        </dl>
+        <button id="restart" class="restart-button" type="button">Reiniciar</button><button id="pause" class="icon-button" type="button" disabled aria-label="Pausar partida" title="Pausar · Enter">Ⅱ</button>
+      </div>
+      <div class="stage">
+        <canvas id="game" width="960" height="540" tabindex="0" aria-label="Fase de plataforma. Setas movem, espaço salta, Enter pausa e Esc volta ao início." aria-describedby="controls">Seu navegador precisa oferecer suporte ao Canvas para jogar.</canvas>
+        <div class="overlay menu-screen" id="overlay">
+          <div class="start-card">
+            <span class="tag" id="screen-tag">GREEN HILL</span>
+            <h2 id="screen-title">liberty</h2>
+            <p id="screen-description">Corra pelos mares de morros, colete anéis e destrua os vilões. Alcance a placa de chegada com suas vidas intactas.</p>
+            <button id="primary" class="primary-button" type="button">Jogar <span aria-hidden="true">→</span></button>
+            <button id="secondary" class="text-button" type="button" hidden>Voltar ao início</button>
+            <span class="start-hint" id="screen-hint">← → Mover · ↑ Olhar · ↓ Agachar/rolar<br>Espaço Saltar · Enter Pausa · Esc Início<br>Cada vilão derrotado: +10 anéis</span>
+          </div>
+        </div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      </div>
+      <div class="stage-footer"><span class="controls-hint">← → Mover · ↑ Olhar · ↓ Agachar/rolar · Espaço Saltar · Enter Pausa · Esc Início</span><span id="progress-text">0% DO PERCURSO</span></div>
+      <div class="progress-track" role="progressbar" aria-label="Progresso da fase" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div id="progress-fill"></div></div>
+    </section>
+    <p id="controls" class="sr-only">Setas esquerda e direita movem. Seta para cima olha para cima. Seta para baixo agacha ou rola. Espaço salta. Enter pausa e retoma. Esc volta ao início. Sua pontuação é a quantidade de anéis. Cada anel coletado soma um. Salte sobre os inimigos para ganhar 10 anéis. Receber dano faz perder os anéis. Sem anéis, receber dano custa uma vida. Cair no abismo também custa uma vida. Alcance a chegada antes de perder as três vidas. Reiniciar recomeça o jogo com três vidas e zero anéis.</p>
+  </main>
+</body>
+</html>
+
+
+
+
+
+
+

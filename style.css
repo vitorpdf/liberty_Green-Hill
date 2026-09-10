@@ -1,0 +1,320 @@
+/* Variáveis de cor reutilizadas em todo o jogo. */
+:root {
+  color-scheme: dark;
+  --ink: #183d35;
+  --green: #d5ee53;
+}
+
+/* Mantém dimensões previsíveis e remove estilos padrão do navegador. */
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body { background: #102b2a; color: #fff; font-family: Arial, Helvetica, sans-serif; }
+
+/* Faz os controles herdarem a tipografia e indica que são interativos. */
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .35; cursor: default; }
+button:focus-visible, canvas:focus-visible {
+  outline: 3px solid #faad38;
+  outline-offset: -3px;
+}
+[hidden] { display: none !important; }
+
+/* Define o contêiner que ocupa toda a janela. */
+.shell { width: 100%; height: 100vh; height: 100dvh; }
+
+/* Posiciona o jogo como uma camada sobre o cenário. */
+.arcade {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #102b2a;
+}
+
+/* Barra superior com informações da fase e controles. */
+.toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 66px;
+  padding: 12px 24px;
+  background: linear-gradient(#102b2aee, #102b2a99, transparent);
+}
+
+/* Agrupa o número, o nome e a identificação da fase. */
+.zone { display: flex; align-items: center; gap: 12px; }
+.zone-number {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #55725e;
+  border-radius: 50%;
+  color: var(--green);
+  font: 15px monospace;
+}
+.zone strong { display: block; font-size: 13px; letter-spacing: 1.5px; }
+.zone div > span {
+  display: block;
+  margin-top: 5px;
+  color: #a9c0b1;
+  font: 9px monospace;
+}
+
+/* Alinha a quantidade de anéis e de vidas no lado direito. */
+.stats { display: flex; gap: 32px; margin: 0 8px 0 auto; }
+.stats dt {
+  margin-bottom: 4px;
+  color: #a9c0b1;
+  font: 9px monospace;
+  letter-spacing: 1px;
+}
+.stats dd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: bold 21px monospace;
+}
+
+/* Desenha o ícone visual de um anel. */
+.ring-icon {
+  display: inline-block;
+  width: 14px;
+  height: 18px;
+  border: 3px solid #ffd34a;
+  border-radius: 50%;
+}
+
+/* Estilos dos botões pequenos da interface. */
+.icon-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #658477;
+  border-radius: 6px;
+  background: #24473e;
+  color: #fff;
+}
+.icon-button:hover:not(:disabled) { background: #355b4d; }
+.restart-button {
+  min-height: 36px;
+  padding: 8px 13px;
+  border: 1px solid #d5ee5388;
+  border-radius: 6px;
+  background: #183d35dc;
+  color: #f1f7eb;
+  font-size: 12px;
+}
+.restart-button:hover { background: #355b4d; }
+
+/* Área que contém o Canvas e os elementos sobrepostos. */
+.stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #143c38;
+}
+
+/* Faz o Canvas acompanhar o tamanho da janela do jogo. */
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  outline: none;
+}
+
+/* Camada que escurece o cenário e centraliza o menu. */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px 60px;
+  overflow-y: auto;
+  background: #08252226;
+}
+
+/* Painel translúcido usado no menu, pausa e telas de resultado. */
+.start-card {
+  width: min(460px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 32px;
+  border: 1px solid rgba(222, 246, 206, .4);
+  border-radius: 14px;
+  background: rgba(8, 34, 30, .78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  box-shadow: 0 18px 60px #102b2a55;
+  text-align: center;
+}
+.tag {
+  color: #d5eea8;
+  font: 10px monospace;
+  letter-spacing: 1.5px;
+}
+.start-card h2 {
+  margin: 18px 0 16px;
+  font-size: clamp(26px, 4vw, 40px);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+.start-card p {
+  margin: 0 0 24px;
+  color: #f1f7eb;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.start-hint {
+  display: block;
+  margin-top: 18px;
+  color: #f1f7eb;
+  font: 11px monospace;
+  line-height: 1.8;
+}
+
+/* Destaca o título da tela inicial. */
+.menu-screen #screen-title {
+  margin: 14px 0 20px;
+  color: #d5ee53;
+  font-size: clamp(56px, 9vw, 104px);
+  font-weight: 800;
+  letter-spacing: -4px;
+  text-shadow: 0 3px 16px #0005;
+}
+
+/* Botão principal para iniciar, continuar ou reiniciar o jogo. */
+.primary-button {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 20px;
+  border: 0;
+  border-radius: 6px;
+  background: #d5ee53;
+  color: #15352b;
+  font-weight: bold;
+}
+.primary-button:hover { background: #e4fa83; }
+
+/* Botão textual secundário, usado para voltar ao menu. */
+.text-button {
+  display: block;
+  margin: 12px auto 0;
+  padding: 5px;
+  border: 0;
+  background: none;
+  color: #f1f7eb;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+/* Mensagem temporária exibida durante a partida. */
+.toast {
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  width: max-content;
+  max-width: 90%;
+  padding: 10px 18px;
+  transform: translateX(-50%);
+  border: 1px solid #91ad70;
+  border-radius: 24px;
+  background: #102b2aee;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+}
+.toast.visible { opacity: 1; }
+
+/* Rodapé flutuante com dicas de controle e progresso textual. */
+.stage-footer {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  padding: 7px 24px;
+  background: linear-gradient(transparent, #102b2add);
+  color: #bdd0c3;
+  font: 9px monospace;
+  letter-spacing: .5px;
+  pointer-events: none;
+}
+.stage-footer > span:first-child { display: flex; align-items: center; gap: 8px; }
+.controls-hint { color: #d7e5db; text-align: center; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+/* Barra visual que indica quanto da fase foi concluído. */
+.progress-track {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  height: 3px;
+  background: #23473c;
+}
+.progress-track > div { width: 0; height: 100%; background: var(--green); }
+
+/* Mantém instruções acessíveis para leitores de tela sem exibi-las visualmente. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Ajusta espaçamentos e tamanhos para telas estreitas. */
+@media (max-width: 700px) {
+  .toolbar { gap: 8px; min-height: 58px; padding: 10px 12px; }
+  .zone-number { display: none; }
+  .zone strong { font-size: 11px; letter-spacing: .5px; }
+  .zone div > span { font-size: 8px; }
+  .stats { gap: 12px; margin-right: 0; }
+  .stats dd { font-size: 17px; }
+  .stats dt { font-size: 8px; }
+  .icon-button { width: 30px; height: 32px; }
+  .restart-button { min-height: 32px; padding: 7px 8px; font-size: 11px; }
+  .stage-footer { flex-wrap: wrap; padding: 7px 12px; font-size: 8px; }
+  .controls-hint { order: 3; width: 100%; }
+  .start-card { padding: 22px; }
+}
+
+/* Reduz o menu para que ele caiba em telas com pouca altura. */
+@media (max-height: 500px) {
+  .toolbar { min-height: 46px; padding-top: 5px; padding-bottom: 5px; }
+  .zone-number { width: 30px; height: 30px; }
+  .overlay { padding: 52px 12px 48px; }
+  .start-card { padding: 16px 24px; }
+  .start-card h2 { margin: 8px 0; font-size: 26px; }
+  .menu-screen #screen-title { margin: 5px 0 10px; font-size: 48px; }
+  .start-card p { margin-bottom: 12px; font-size: 12px; line-height: 1.4; }
+  .primary-button { padding: 10px; }
+  .start-hint { margin-top: 8px; font-size: 10px; }
+  .stage-footer { min-height: 24px; padding-top: 4px; padding-bottom: 4px; }
+}
