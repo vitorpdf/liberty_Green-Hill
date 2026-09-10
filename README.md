@@ -34,7 +34,7 @@ O jogo possui um único personagem jogável e utiliza teclado. Ao sair da janela
 
 ### Versão online — GitHub Pages
 
-**Link da versão publicada: pendente de publicação.**
+**Link da versão publicada: [Clique aqui!](https://vitorpdf.github.io/liberty_Green-Hill/)**
 
 
 ### Execução local
